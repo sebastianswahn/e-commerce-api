@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
 
 const productSchema = mongoose.Schema({
-  /*     _id:// make ID mmodel UUI/GUID */
-
+  _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
   name: { type: String },
   price: { type: Number },
   description: { type: String },
