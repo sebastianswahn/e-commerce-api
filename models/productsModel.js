@@ -1,5 +1,5 @@
-const Product = require("../schemas/productsSchema");
-const mongoose = require("mongoose");
+const Product = require("../schemas/productSchema");
+
 
 exports.getAllProducts = (req, res) => {
   Product.find().then((data) => {
@@ -15,18 +15,20 @@ exports.getProductById = (req, res) => {
   });
 };
 
-exports.createProduct = async (req, res) => {
+exports.createNewProduct = async (req, res) => {
   try {
 
-    const { name, price, description, images, category } = req.body
+    const { name, price, description, category, images  } = req.body
 
     if(!name || !price || !description || !images || !category) throw new Error ("Please enter all fields")
 
-    const product = await Product.create({ name, price, description, images, category })
+    const product = await Product.create({ name, price, description, category, images })
     res.status(201).json(product)
 
   } catch (err) {
-
+    res.json({
+      message: err.message
+    })
 
   }
 
