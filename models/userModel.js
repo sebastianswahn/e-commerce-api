@@ -1,19 +1,64 @@
 const User = require("../schemas/userSchema")
+const bcrypt = require("bcryptjs")
+const asyncHandler = require("express-async-handler")
+const tokenGenerator = require("../utils/tokenGenerator.js")
+const mongoose = require("mongoose")
 
 
-exports.createNewUser = async (req, res) => {
-    try {
+createNewUser = asyncHandler (async (req, res) => {
 
         const { email, password } = req.body
 
-        if (!email || !password) throw new Error ("You need to enter an email and password")
+        if (!email || !password) {
+            res.status(400)
+            throw new Error ("You need to enter an email and password")
+        }
 
-        const user = await User.create({ email, password })
-        res.status(201).json(user)
+        const emailTaken = await User.exists({ email })
+        if (emailTaken) {
+            res.status(400)
+            throw new Error ("Email already taken")
+        }
 
-    } catch {
-        res.json({
-            message: err.message
-          })
-    }
-}
+
+        const user = new User({ email, passwordHash: password })
+        await user.save()
+
+        console.log(user)
+
+        const token = tokenGenerator(user)
+
+        console.log(token)
+
+        res.status(201).json({
+            _id: user._id,
+            email: user.email,
+            token
+        })
+ })
+
+        const userLogin = asyncHandler (async (req, res) => {
+            const { email, password } = req.body
+
+            if (!email || !password) {
+                res.status(400)
+                throw new Error ("You need to enter an email and password") 
+            }
+
+            const user = await User.findOne({ email })
+
+            if (user && (await user.matchPassword(password))) {
+                const token = tokenGenerator(user)
+                res.json({
+                    _id: user._id,
+                    email: user.email,
+                    token: genereateToken(user)
+                })
+            } else {
+                res.status(401)
+                throw new Error ("Invalid email or password")
+            }
+        })
+
+
+module.exports = { createNewUser, userLogin}
