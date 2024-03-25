@@ -8,4 +8,8 @@ app.use("/api/products", require("./controllers/productController"))
 
 app.use("/api/users", require("./controllers/userController"))
 
+app.use("/api/messages", require("./controllers/messageController"))
+
+app.use("/api/orders", require("./controllers/ordersController"))
+
 module.exports = app;
