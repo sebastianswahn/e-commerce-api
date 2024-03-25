@@ -30,7 +30,17 @@ exports.createNewProduct = async (req, res) => {
       message: err.message
     })
 
+  }}
+
+  exports.deleteProduct = (req, res) => {
+    Product.findByIdAndDelete(req.params.id)
+      .then((data) => {
+        if (!data) {
+          return res.status(404).json({ message: "Not Found" });
+        } else res.status(200).json({ message: "Product deleted" });
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ message: "An error occurred" });
+      });
   }
-
-
-}
