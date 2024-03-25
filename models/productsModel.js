@@ -44,3 +44,16 @@ exports.createNewProduct = async (req, res) => {
         res.status(500).json({ message: "An error occurred" });
       });
   }
+
+  exports.updateProduct = (req, res) => {
+    Product.findByIdAndUpdate(req.params.id, req.body)
+      .then((data) => {
+        if (!data) {
+          return res.status(404).json({ message: "Not Found" });
+        } else res.status(200).json({ message: "Product updated" });
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ message: "An error occurred" });
+      });
+  }
