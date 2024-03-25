@@ -47,13 +47,18 @@ createNewUser = asyncHandler (async (req, res) => {
 
             const user = await User.findOne({ email })
 
+            if (!user) {
+                res.status(401)
+                throw new Error ("Incorrect email or password")
+            }
+
             if (user && (await user.matchPassword(password))) {
-                const token = tokenGenerator(user)
-                res.json({
+                res.status(200).json({
                     _id: user._id,
                     email: user.email,
-                    token: genereateToken(user)
+                    token: tokenGenerator(user)
                 })
+                
             } else {
                 res.status(401)
                 throw new Error ("Invalid email or password")
