@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken') 
 
+
 const verifyToken = (req, res, next) => {
   try {
     if (!req.headers.authorization) {
@@ -13,9 +14,11 @@ const verifyToken = (req, res, next) => {
     }
 
     const token = parts[1];
+
+
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
-    req.user._id = decoded.user._id;
+    req.userId = decoded.userId;
     next();
   } catch (err) {
     res.status(401);

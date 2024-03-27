@@ -10,7 +10,7 @@ const sendMessage = async (req, res) => {
         res.status(200).json(createNewMessage)
 
     } catch (err) {
-        res.json.status(400)({
+        res.status(400).json({
             message: err.message
         })
 
